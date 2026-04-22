@@ -1,29 +1,412 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Inventario</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StockFlow — Gestión de Almacén</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 </head>
 <body>
 
-    <h2>Registrar Producto</h2>
-    <input id="codigo" placeholder="Código">
-    <input id="nombre" placeholder="Nombre">
-    <input id="stock" type="number" placeholder="Stock inicial">
-    <input id="costo" type="number" placeholder="Costo unitario">
-    <button onclick="registrarProducto()">Registrar</button>
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <rect x="2" y="2" width="7" height="7" rx="2" fill="white"/>
+          <rect x="11" y="2" width="7" height="7" rx="2" fill="white" opacity="0.6"/>
+          <rect x="2" y="11" width="7" height="7" rx="2" fill="white" opacity="0.6"/>
+          <rect x="11" y="11" width="7" height="7" rx="2" fill="white" opacity="0.3"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-title">StockFlow</div>
+        <div class="logo-sub">Sistema de Almacén</div>
+      </div>
+    </div>
 
-    <h2>Recepción de Productos</h2>
-    <input id="codigo2" placeholder="Código">
-    <input id="cantidad" type="number" placeholder="Cantidad recibida">
-    <input id="costo2" type="number" placeholder="Costo unitario">
-    <button onclick="recibirProducto()">Actualizar</button>
+    <div class="nav-section-label">NAVEGACIÓN</div>
+    <nav class="sidebar-nav">
+      <a class="nav-item active" href="#" data-tab="dashboard" onclick="return switchTab('dashboard',this)">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".5"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".5"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".3"/></svg>
+        </span>
+        Dashboard
+      </a>
+      <a class="nav-item" href="#" data-tab="productos" onclick="return switchTab('productos',this)">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1L14 4.5V11.5L8 15L2 11.5V4.5L8 1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 1V15M2 4.5L8 8L14 4.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </span>
+        Nuevo Producto
+      </a>
+      <a class="nav-item" href="#" data-tab="recepcion" onclick="return switchTab('recepcion',this)">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v8M5 8l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </span>
+        Recepción
+        <span class="nav-badge green" id="badge-recepciones">0</span>
+      </a>
+      <a class="nav-item" href="#" data-tab="despacho" onclick="return switchTab('despacho',this)">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 13V5M5 8l3-3 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 3h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </span>
+        Despacho
+        <span class="nav-badge orange" id="badge-despachos">0</span>
+      </a>
+      <a class="nav-item" href="#" data-tab="inventario" onclick="return switchTab('inventario',this)">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h12M2 12h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </span>
+        Inventario
+      </a>
+    </nav>
 
-    <h2>Productos</h2>
-    <pre id="resultado"></pre>
+    <div class="sidebar-footer">
+      <div class="sidebar-stats-mini">
+        <div class="stat-row"><span>Productos</span><strong id="sf-productos">0</strong></div>
+        <div class="stat-row"><span>Valor total</span><strong id="sf-valor" class="accent">S/0.00</strong></div>
+      </div>
+    </div>
+  </aside>
 
-    <script src="script.js"></script>
+  <!-- MAIN -->
+  <div class="main-wrap">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 4h14M2 9h14M2 14h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-right">
+        <div class="topbar-date" id="topbarDate"></div>
+        <div class="status-chip">
+          <span class="chip-dot"></span> En línea
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Bienvenido 👋</h1>
+            <p class="page-sub">Resumen general de tu almacén en tiempo real.</p>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card blue">
+            <div class="kpi-top">
+              <span class="kpi-label">Total Productos</span>
+              <span class="kpi-icon-wrap blue">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 1L16 5V13L9 17L2 13V5L9 1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              </span>
+            </div>
+            <div class="kpi-val" id="kpi-productos">0</div>
+            <div class="kpi-foot">productos registrados</div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-top">
+              <span class="kpi-label">Unidades en stock</span>
+              <span class="kpi-icon-wrap green">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="8" width="14" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M6 8V5a3 3 0 016 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </span>
+            </div>
+            <div class="kpi-val" id="kpi-unidades">0</div>
+            <div class="kpi-foot">unidades totales</div>
+          </div>
+          <div class="kpi-card purple">
+            <div class="kpi-top">
+              <span class="kpi-label">Valor del inventario</span>
+              <span class="kpi-icon-wrap purple">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M9 5v8M7 7h3a1 1 0 010 2H8a1 1 0 000 2h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </span>
+            </div>
+            <div class="kpi-val" id="kpi-valor">S/0.00</div>
+            <div class="kpi-foot">costo total valorizado</div>
+          </div>
+          <div class="kpi-card orange">
+            <div class="kpi-top">
+              <span class="kpi-label">Movimientos</span>
+              <span class="kpi-icon-wrap orange">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 9h14M9 2l7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </div>
+            <div class="kpi-val" id="kpi-movimientos">0</div>
+            <div class="kpi-foot">recepciones + despachos</div>
+          </div>
+        </div>
+
+        <div class="dash-grid">
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <h3>Estado del inventario</h3>
+              <button class="link-btn" onclick="switchTab('inventario', document.querySelector('[data-tab=inventario]'))">Ver todo →</button>
+            </div>
+            <div id="dash-inv-list" class="dash-inv-list">
+              <div class="empty-dash">Registra productos para ver el estado aquí.</div>
+            </div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-header"><h3>Actividad reciente</h3></div>
+            <div id="dash-actividad" class="activity-list">
+              <div class="empty-dash">Los movimientos aparecerán aquí.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-section">
+          <div class="qa-title">Acciones rápidas</div>
+          <div class="qa-row">
+            <button class="qa-btn blue" onclick="switchTab('productos', document.querySelector('[data-tab=productos]'))">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              Registrar producto
+            </button>
+            <button class="qa-btn green" onclick="switchTab('recepcion', document.querySelector('[data-tab=recepcion]'))">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v11M6 10l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Nueva recepción
+            </button>
+            <button class="qa-btn orange" onclick="switchTab('despacho', document.querySelector('[data-tab=despacho]'))">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 17V6M6 10l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Registrar despacho
+            </button>
+            <button class="qa-btn purple" onclick="exportarCSV()">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v11M6 10l4 4 4-4M3 17h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Exportar CSV
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- NUEVO PRODUCTO -->
+      <div class="page" id="page-productos">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Registrar Producto</h1>
+            <p class="page-sub">Agrega un producto al almacén con su stock y costo unitario inicial.</p>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <div class="form-card-title">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 1L16 5V13L9 17L2 13V5L9 1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            Información del producto
+          </div>
+          <div class="form-grid-2">
+            <div class="field-group">
+              <label>Código del producto</label>
+              <input id="p_codigo" type="text" placeholder="Ej: PRD-001" />
+              <span class="field-hint">Identificador único. No puede repetirse.</span>
+            </div>
+            <div class="field-group">
+              <label>Nombre del producto</label>
+              <input id="p_nombre" type="text" placeholder="Ej: Laptop Lenovo IdeaPad" />
+            </div>
+            <div class="field-group">
+              <label>Stock inicial</label>
+              <div class="input-affix">
+                <span>uds</span>
+                <input id="p_stock" type="number" placeholder="0" min="0" oninput="previewProducto()" />
+              </div>
+            </div>
+            <div class="field-group">
+              <label>Costo unitario inicial</label>
+              <div class="input-affix">
+                <span>S/</span>
+                <input id="p_costo" type="number" placeholder="0.00" min="0" step="0.01" oninput="previewProducto()" />
+              </div>
+            </div>
+          </div>
+
+          <div class="calc-box" id="calcPreview" style="display:none">
+            <div class="calc-title">Cálculo automático</div>
+            <div class="calc-grid">
+              <div class="calc-item"><span>Costo total inicial</span><strong id="prev_total">—</strong></div>
+              <div class="calc-item highlight"><span>Costo promedio inicial</span><strong id="prev_promedio">—</strong></div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="registrarProducto()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              Registrar producto
+            </button>
+          </div>
+        </div>
+
+        <div class="section-title">Productos registrados</div>
+        <div id="productGrid" class="product-grid">
+          <div class="empty-card">Aún no hay productos. Registra el primero arriba.</div>
+        </div>
+      </div>
+
+      <!-- RECEPCIÓN -->
+      <div class="page" id="page-recepcion">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Recepción de Mercadería</h1>
+            <p class="page-sub">Registra el ingreso de productos y recalcula el CPP automáticamente.</p>
+          </div>
+          <div class="formula-chip">
+            <span class="formula-label">Fórmula CPP</span>
+            <code>(Costo total ant. + Costo nueva compra) ÷ (Stock ant. + Cant. recibida)</code>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <div class="form-card-title">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v10M5 9l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 15h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Datos de la recepción
+          </div>
+          <div class="form-grid-3">
+            <div class="field-group">
+              <label>Producto</label>
+              <select id="r_codigo" onchange="previewRecepcion()">
+                <option value="">Seleccionar producto</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Cantidad recibida</label>
+              <div class="input-affix"><span>uds</span><input id="r_cantidad" type="number" placeholder="0" min="1" oninput="previewRecepcion()" /></div>
+            </div>
+            <div class="field-group">
+              <label>Costo unitario de compra</label>
+              <div class="input-affix"><span>S/</span><input id="r_costo" type="number" placeholder="0.00" min="0" step="0.01" oninput="previewRecepcion()" /></div>
+            </div>
+          </div>
+
+          <div class="compare-panel" id="infoRecepcion" style="display:none">
+            <div class="compare-side">
+              <div class="compare-label red">Antes</div>
+              <div class="compare-row"><span>Stock</span><b id="r_a_stock">—</b></div>
+              <div class="compare-row"><span>Costo Promedio</span><b id="r_a_cpp">—</b></div>
+              <div class="compare-row"><span>Valor total</span><b id="r_a_total">—</b></div>
+            </div>
+            <div class="compare-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M14 6l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="compare-side">
+              <div class="compare-label green">Después</div>
+              <div class="compare-row"><span>Stock</span><b id="r_d_stock" class="green">—</b></div>
+              <div class="compare-row"><span>Costo Promedio</span><b id="r_d_cpp" class="green">—</b></div>
+              <div class="compare-row"><span>Valor total</span><b id="r_d_total" class="green">—</b></div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-green" onclick="registrarRecepcion()">Confirmar recepción</button>
+          </div>
+        </div>
+
+        <div class="section-title">Historial de recepciones</div>
+        <div id="histRecepcion" class="historial"></div>
+      </div>
+
+      <!-- DESPACHO -->
+      <div class="page" id="page-despacho">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Despacho de Mercadería</h1>
+            <p class="page-sub">Registra la salida de productos. El costo promedio no cambia.</p>
+          </div>
+          <div class="formula-chip orange">
+            <span class="formula-label">Nota CPP</span>
+            <code>El CPP no varía al despachar. Solo disminuye el stock y valor total.</code>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <div class="form-card-title">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 15V5M5 9l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 3h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Datos del despacho
+          </div>
+          <div class="form-grid-2" style="max-width:520px">
+            <div class="field-group">
+              <label>Producto</label>
+              <select id="d_codigo" onchange="previewDespacho()">
+                <option value="">Seleccionar producto</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Cantidad a despachar</label>
+              <div class="input-affix"><span>uds</span><input id="d_cantidad" type="number" placeholder="0" min="1" oninput="previewDespacho()" /></div>
+            </div>
+          </div>
+
+          <div id="alertDespacho" class="alert-error" style="display:none"></div>
+
+          <div class="compare-panel" id="infoDespacho" style="display:none">
+            <div class="compare-side">
+              <div class="compare-label red">Antes</div>
+              <div class="compare-row"><span>Stock</span><b id="d_a_stock">—</b></div>
+              <div class="compare-row"><span>Costo Promedio</span><b id="d_a_cpp">—</b></div>
+              <div class="compare-row"><span>Valor total</span><b id="d_a_total">—</b></div>
+            </div>
+            <div class="compare-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M14 6l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="compare-side">
+              <div class="compare-label orange">Después</div>
+              <div class="compare-row"><span>Stock</span><b id="d_d_stock" class="orange">—</b></div>
+              <div class="compare-row"><span>Costo Promedio</span><b id="d_d_cpp" class="orange">—</b></div>
+              <div class="compare-row"><span>Valor total</span><b id="d_d_total" class="orange">—</b></div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-orange" onclick="registrarDespacho()">Confirmar despacho</button>
+          </div>
+        </div>
+
+        <div class="section-title">Historial de despachos</div>
+        <div id="histDespacho" class="historial"></div>
+      </div>
+
+      <!-- INVENTARIO -->
+      <div class="page" id="page-inventario">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Inventario</h1>
+            <p class="page-sub">Estado actual de todos los productos valorados por costo promedio.</p>
+          </div>
+          <div class="header-tools">
+            <div class="search-wrap">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <input id="searchInv" type="text" placeholder="Buscar producto..." oninput="renderInventario()" />
+            </div>
+            <button class="btn btn-outline" onclick="exportarCSV()">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 2v9M5 8l2.5 3L10 8M2 13h11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Exportar CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="sortable" onclick="sortTable('codigo')">Código <span class="sort-arrow" id="sort-codigo">↕</span></th>
+                <th class="sortable" onclick="sortTable('nombre')">Nombre <span class="sort-arrow" id="sort-nombre">↕</span></th>
+                <th class="sortable th-right" onclick="sortTable('stock')">Stock <span class="sort-arrow" id="sort-stock">↕</span></th>
+                <th class="sortable th-right" onclick="sortTable('costo_promedio')">Costo Prom. <span class="sort-arrow" id="sort-costo_promedio">↕</span></th>
+                <th class="sortable th-right" onclick="sortTable('costo_total')">Valor Total <span class="sort-arrow" id="sort-costo_total">↕</span></th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="invBody">
+              <tr><td colspan="6" class="empty-cell">No hay productos registrados aún.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="script.js"></script>
 </body>
 </html>
