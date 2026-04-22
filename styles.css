@@ -1,0 +1,79 @@
+/* 🔹 Fondo general */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+/* 🔹 Contenedor principal */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 🔹 Títulos */
+h2 {
+    background: #ffffff;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-top: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* 🔹 Inputs */
+input {
+    display: block;
+    width: 250px;
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+/* 🔹 Efecto al escribir */
+input:focus {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* 🔹 Botones */
+button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* 🔹 Hover botón */
+button:hover {
+    transform: scale(1.08);
+    background: linear-gradient(135deg, #ff7eb3, #ff758c);
+}
+
+/* 🔹 Área de resultados */
+#resultado {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
+    width: 80%;
+    max-width: 500px;
+    margin-top: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    overflow-x: auto;
+}
+
+/* 🔹 Animación suave */
+* {
+    transition: all 0.2s ease-in-out;
+}

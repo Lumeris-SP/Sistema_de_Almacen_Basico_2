@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario</title>
+      <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h2>Registrar Producto</h2>
+    <input id="codigo" placeholder="Código">
+    <input id="nombre" placeholder="Nombre">
+    <input id="stock" type="number" placeholder="Stock inicial">
+    <input id="costo" type="number" placeholder="Costo unitario">
+    <button onclick="registrarProducto()">Registrar</button>
+
+    <h2>Recepción de Productos</h2>
+    <input id="codigo2" placeholder="Código">
+    <input id="cantidad" type="number" placeholder="Cantidad recibida">
+    <input id="costo2" type="number" placeholder="Costo unitario">
+    <button onclick="recibirProducto()">Actualizar</button>
+
+    <h2>Productos</h2>
+    <pre id="resultado"></pre>
+
+    <script src="script.js"></script>
+</body>
+</html>
