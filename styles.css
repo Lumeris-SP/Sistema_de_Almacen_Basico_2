@@ -8,11 +8,11 @@
 /* ---- Variables ---- */
 :root {
   --white:      #ffffff;
-  --bg:         #f5f6fa;
-  --bg2:        #eef0f6;
-  --surface:    #ffffff;
-  --border:     #e4e7ef;
-  --border2:    #d0d5e8;
+  --bg:         #ebecf2;
+  --bg2:        #9ef37f;
+  --surface:    #efe7e7;
+  --border:     #1a1a1a;
+  --border2:    #7e7b7b;
 
   --text:       #111827;
   --text-2:     #374151;
@@ -30,13 +30,13 @@
   --green-dark: #065f46;
 
   --purple:     #8b5cf6;
-  --purple-light:#f5f3ff;
-  --purple-mid: #ede9fe;
+  --purple-light:#b1b3f8;
+  --purple-mid: #a3a3f1;
 
-  --orange:     #f59e0b;
-  --orange-light:#fffbeb;
-  --orange-mid: #fef3c7;
-  --orange-dark:#92400e;
+  --orange:     #fb9f00;
+  --orange-light:#faf3f3;
+  --orange-mid: #f6e7aa;
+  --orange-dark:#6f310a;
 
   --red:        #ef4444;
   --red-light:  #fef2f2;
@@ -622,7 +622,7 @@ body {
 }
 .input-affix:focus-within {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+  box-shadow: 0 0 0 3px rgba(39, 115, 236, 0.12);
 }
 .input-affix span {
   padding: 0 10px;
@@ -755,7 +755,7 @@ body {
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   padding: 10px 20px;
   border-radius: var(--radius);
   border: none;
@@ -769,24 +769,24 @@ body {
 
 .btn-primary {
   background: var(--blue);
-  color: white;
-  box-shadow: 0 2px 8px rgba(59,130,246,0.3);
+  color: rgb(0, 0, 0);
+  box-shadow: 0 2px 8px rgba(36, 115, 243, 0.3);
 }
 .btn-primary:hover { background: var(--blue-dark); box-shadow: 0 4px 16px rgba(59,130,246,0.4); transform: translateY(-1px); }
 
 .btn-green {
   background: var(--green);
-  color: white;
-  box-shadow: 0 2px 8px rgba(16,185,129,0.3);
+  color: rgb(238, 236, 236);
+  box-shadow: 0 2px 8px rgba(147, 137, 137, 0.3);
 }
-.btn-green:hover { background: #059669; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,0.4); }
+.btn-green:hover { background: #2dff07; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,0.4); }
 
 .btn-orange {
   background: var(--orange);
   color: white;
-  box-shadow: 0 2px 8px rgba(245,158,11,0.3);
+  box-shadow: 0 2px 8px rgba(227, 156, 31, 0.3);
 }
-.btn-orange:hover { background: #d97706; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(245,158,11,0.4); }
+.btn-orange:hover { background: #ff8902; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(245,158,11,0.4); }
 
 .btn-outline {
   background: var(--white);
